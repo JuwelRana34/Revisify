@@ -23,8 +23,8 @@ export default function LoginPage() {
     try {
       await account.createOAuth2Session(
         OAuthProvider.Google,
-        https://revisifybd.netlify.app/dashboard`,
-        `https://revisifybd.netlify.app/login`,
+        https://revisifybd.netlify.app/dashboard,
+        `https://revisifybd.netlify.app/login,
       );
       
     } catch (error) {
