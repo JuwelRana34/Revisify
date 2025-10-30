@@ -19,7 +19,7 @@ export async function addRevision(userId: string, topicName: string) {
   try {
     const nextRevisionDates = generateNextRevisions();
     const doc = await serverDatabases.createDocument(
-       process.env.DATABASE_ID!,   // "!" tells TypeScript it's not undefined
+       process.env.DATABASE_ID!, 
   process.env.COLLECTION_ID!,
       ID.unique(),
       {

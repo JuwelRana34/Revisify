@@ -9,7 +9,8 @@ import {
 import { RevisionProgressCard } from "@/components/RevisionProgressCard";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { Separator } from "@/components/ui/separator";
+import { Textarea } from "@/components/ui/textarea";
 import { account } from "@/lib/appwriteClient";
 import { motion } from "framer-motion";
 import Image from "next/image";
@@ -20,6 +21,7 @@ export default function DashboardPage() {
   const [topic, setTopic] = useState("");
   const [revisions, setRevisions] = useState<Revision[]>([]);
   const [isLoading, startTransition] = useTransition();
+  const [addLoading, startAddTransition] = useTransition();
 
   const router = useRouter();
   const today = new Date().toISOString().split("T")[0];
@@ -42,22 +44,24 @@ export default function DashboardPage() {
 
   const handleAdd = async () => {
     if (!topic.trim()) return alert("Please enter a topic name");
-    try {
-      const user = await account.get();
-      const USER_ID = user.$id;
-      const res = await addRevision(USER_ID, topic);
-      if (res.success) {
-        setTopic("");
-        const data: Revision[] = await getTodayRevisions(USER_ID);
-        setRevisions(data);
-      } else {
-        alert("Failed to add topic");
-        console.error(res.error);
+    startAddTransition(async () => {
+      try {
+        const user = await account.get();
+        const USER_ID = user.$id;
+        const res = await addRevision(USER_ID, topic);
+        if (res.success) {
+          setTopic("");
+          const data: Revision[] = await getTodayRevisions(USER_ID);
+          setRevisions(data);
+        } else {
+          alert("Failed to add topic");
+          console.error(res.error);
+        }
+      } catch (err) {
+        console.error("Error fetching user:", err);
+        alert("User not logged in or session expired");
       }
-    } catch (err) {
-      console.error("Error fetching user:", err);
-      alert("User not logged in or session expired");
-    }
+    });
   };
 
   const handleComplete = async (rev: Revision) => {
@@ -96,7 +100,7 @@ export default function DashboardPage() {
 
         {/* Input + Add Button */}
         <div className="flex flex-col sm:flex-row gap-3 mb-6">
-          <Input
+          <Textarea
             placeholder="Enter topic name"
             value={topic}
             onChange={(e) => setTopic(e.target.value)}
@@ -104,14 +108,15 @@ export default function DashboardPage() {
           />
           <Button
             onClick={handleAdd}
-            className="w-full bg-blue-500 hover:bg-blue-600 sm:w-auto"
+            disabled={addLoading}
+            className="w-full disabled:opacity-70 disabled:cursor-not-allowed bg-blue-500 hover:bg-blue-600 sm:w-auto"
           >
-            Add
+            {addLoading ? "adding.." : "Add"}
           </Button>
         </div>
 
         {/* Divider */}
-        <div className="border-t border-gray-200 mb-4"></div>
+       <Separator className="mb-2 bg-gray-300"/>
 
         <h2 className="text-lg font-semibold text-gray-300 mb-4">
           Today’s Revisions

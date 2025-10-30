@@ -1,18 +1,13 @@
 import { Toaster } from "@/components/ui/sonner";
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import {Nunito_Sans } from "next/font/google";
 import NavBar from "../components/NavBar";
 import "./globals.css";
-import Head from "next/head";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const Nunito = Nunito_Sans({
   subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"], // choose weights you need
+  variable: "--font-Nunito",           // CSS variable name
 });
 
 export const metadata: Metadata = {
@@ -28,7 +23,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} bg-green-600 antialiased`}
+        className={`${Nunito.variable} bg-green-600 antialiased`}
       >
         <NavBar />
         <div>
