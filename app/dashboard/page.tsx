@@ -6,6 +6,7 @@ import {
   getTodayRevisions,
   Revision,
 } from "@/actions/revisions";
+import RevisionLoading from "@/components/RevisionLoading";
 import { RevisionProgressCard } from "@/components/RevisionProgressCard";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -16,6 +17,7 @@ import { motion } from "framer-motion";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useEffect, useState, useTransition } from "react";
+import { toast } from "sonner";
 
 export default function DashboardPage() {
   const [topic, setTopic] = useState("");
@@ -40,7 +42,7 @@ export default function DashboardPage() {
     });
   }, [router]);
 
-  if (isLoading) return <p className="text-center mt-10">Loading...</p>;
+if (isLoading) return <RevisionLoading />;
 
   const handleAdd = async () => {
     if (!topic.trim()) return alert("Please enter a topic name");
@@ -53,6 +55,7 @@ export default function DashboardPage() {
           setTopic("");
           const data: Revision[] = await getTodayRevisions(USER_ID);
           setRevisions(data);
+          toast.success(`added successfully ${topic}`)
         } else {
           alert("Failed to add topic");
           console.error(res.error);
@@ -68,6 +71,7 @@ export default function DashboardPage() {
     try {
       await deleteRevision(rev.$id);
       setRevisions(revisions.filter((r) => r.$id !== rev.$id));
+      toast.success("complete the resivion! thank you.")
     } catch (err) {
       console.error("Failed to complete revision:", err);
       alert("Could not complete revision.");
@@ -99,7 +103,7 @@ export default function DashboardPage() {
         </div>
 
         {/* Input + Add Button */}
-        <div className="flex flex-col sm:flex-row gap-3 mb-6">
+        <div className="flex flex-col justify-center items-center sm:flex-row gap-3 mb-6">
           <Textarea
             placeholder="Enter topic name"
             value={topic}

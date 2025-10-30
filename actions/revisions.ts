@@ -3,6 +3,16 @@
 import { ID, serverDatabases } from "@/lib/appwrite";
 import { Models, Query } from "node-appwrite";
 
+
+// ✅ Fetch today’s revisions
+export interface Revision extends Models.Document {
+  userId: string;
+  topicName: string;
+  nextRevisionDates: string[];
+  done: boolean;
+}
+
+
 // Helper function to calculate next revision dates as array of strings
 function generateNextRevisions() {
   const now = new Date();
@@ -14,13 +24,13 @@ function generateNextRevisions() {
   );
 }
 
-// ✅ Add new topic
+//Add new topic
 export async function addRevision(userId: string, topicName: string) {
   try {
     const nextRevisionDates = generateNextRevisions();
     const doc = await serverDatabases.createDocument(
-       process.env.DATABASE_ID!, 
-  process.env.COLLECTION_ID!,
+      process.env.DATABASE_ID!,
+      process.env.COLLECTION_ID!,
       ID.unique(),
       {
         userId,
@@ -37,21 +47,14 @@ export async function addRevision(userId: string, topicName: string) {
   }
 }
 
-// ✅ Fetch today’s revisions
-export interface Revision extends Models.Document {
-  userId: string;
-  topicName: string;
-  nextRevisionDates: string[];
-  done: boolean;
-}
 
 export async function getTodayRevisions(userId: string): Promise<Revision[]> {
   try {
     const today = new Date().toISOString().split("T")[0];
 
     const res = await serverDatabases.listDocuments<Revision>( // Here we tell Appwrite what shape to expect
-       process.env.DATABASE_ID!,   // "!" tells TypeScript it's not undefined
-  process.env.COLLECTION_ID!,
+      process.env.DATABASE_ID!, // "!" tells TypeScript it's not undefined
+      process.env.COLLECTION_ID!,
       [Query.equal("userId", userId)]
     );
 
@@ -76,7 +79,8 @@ export async function getAllRevisions(userId: string): Promise<Revision[]> {
       process.env.COLLECTION_ID!,
       [
         Query.equal("userId", userId), // filter by userId
-        Query.orderAsc("$createdAt")   // oldest first
+        Query.orderAsc("$createdAt"), // oldest first
+        Query.limit(2)
       ]
     );
     return res.documents; // typed as Revision[]
@@ -89,8 +93,8 @@ export async function getAllRevisions(userId: string): Promise<Revision[]> {
 export async function deleteRevision(revisionId: string) {
   try {
     await serverDatabases.deleteDocument(
-        process.env.DATABASE_ID!,   // "!" tells TypeScript it's not undefined
-  process.env.COLLECTION_ID!,
+      process.env.DATABASE_ID!, // "!" tells TypeScript it's not undefined
+      process.env.COLLECTION_ID!,
       revisionId
     );
     return { success: true };

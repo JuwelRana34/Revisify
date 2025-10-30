@@ -10,10 +10,41 @@ const Nunito = Nunito_Sans({
   variable: "--font-Nunito",           // CSS variable name
 });
 
+
 export const metadata: Metadata = {
-  title: "Revisify",
-  description: "its track your study revision",
+  title: "Revisifybd — Smart Study Revision Tracker",
+  description: "Revisifybd helps students efficiently track, organize, and optimize their study revisions, ensuring faster learning and better exam performance.",
+   icons: {
+    icon: "/notebook.png",       
+    shortcut: "/notebook.png", 
+    apple: "/notebook.png",
+  },
+  keywords: [
+    "Revisifybd", 
+    "study tracker", 
+    "revision app", 
+    "exam preparation", 
+    "learning management",
+    "student productivity"
+  ],
+  authors: [{ name: "Revisifybd Team", url: "https://revisifybd.netlify.app" }],
+  openGraph: {
+    title: "Revisifybd — Smart Study Revision Tracker",
+    description: "Track, organize, and optimize your study revisions with Revisifybd for smarter and faster learning.",
+    url: "https://revisifybd.netlify.app",
+    siteName: "Revisifybd",
+    type: "website",
+    images: [
+      {
+        url: "https://revisify.com/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "Revisifybd - Study Revision Tracker",
+      },
+    ],
+  },
 };
+
 
 export default function RootLayout({
   children,
