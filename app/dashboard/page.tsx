@@ -26,7 +26,8 @@ export default function DashboardPage() {
   const [addLoading, startAddTransition] = useTransition();
 
   const router = useRouter();
-  const today = new Date().toISOString().split("T")[0];
+const today = new Date().toLocaleDateString("en-CA", { timeZone: "Asia/Dhaka" });
+
 
   // Fetch today's revisions
   useEffect(() => {
@@ -41,6 +42,7 @@ export default function DashboardPage() {
       }
     });
   }, [router]);
+
 
 if (isLoading) return <RevisionLoading />;
 
@@ -95,6 +97,7 @@ if (isLoading) return <RevisionLoading />;
             height={1000}
             width={1000}
             alt="task"
+            unoptimized={false}
             className="h-14 rounded w-14 inline"
           />
           <h1 className="bg-linear-to-r from-blue-500 to-emerald-500 text-transparent bg-clip-text">

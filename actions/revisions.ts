@@ -14,15 +14,27 @@ export interface Revision extends Models.Document {
 
 
 // Helper function to calculate next revision dates as array of strings
+// function generateNextRevisions() {
+//   const now = new Date();
+//   return [1, 3, 7, 15].map(
+//     (d) =>
+//       new Date(now.getTime() + d * 24 * 60 * 60 * 1000)
+//         .toISOString()
+//         .split("T")[0]
+//   );
+// }
+
 function generateNextRevisions() {
   const now = new Date();
-  return [1, 3, 7, 15].map(
-    (d) =>
-      new Date(now.getTime() + d * 24 * 60 * 60 * 1000)
-        .toISOString()
-        .split("T")[0]
-  );
+  return [1, 3, 7, 15].map((d) => {
+    const localDate = new Date(
+      now.getTime() + d * 24 * 60 * 60 * 1000
+    );
+    // Convert to local YYYY-MM-DD (not UTC)
+    return localDate.toLocaleDateString("en-CA", { timeZone: "Asia/Dhaka" });
+  });
 }
+
 
 //Add new topic
 export async function addRevision(userId: string, topicName: string) {
@@ -50,7 +62,8 @@ export async function addRevision(userId: string, topicName: string) {
 
 export async function getTodayRevisions(userId: string): Promise<Revision[]> {
   try {
-    const today = new Date().toISOString().split("T")[0];
+   const today = new Date().toLocaleDateString("en-CA", { timeZone: "Asia/Dhaka" });
+
 
     const res = await serverDatabases.listDocuments<Revision>( // Here we tell Appwrite what shape to expect
       process.env.DATABASE_ID!, // "!" tells TypeScript it's not undefined
