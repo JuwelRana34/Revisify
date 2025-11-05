@@ -26,8 +26,9 @@ export default function DashboardPage() {
   const [addLoading, startAddTransition] = useTransition();
 
   const router = useRouter();
-const today = new Date().toLocaleDateString("en-CA", { timeZone: "Asia/Dhaka" });
-
+  const today = new Date().toLocaleDateString("en-CA", {
+    timeZone: "Asia/Dhaka",
+  });
 
   // Fetch today's revisions
   useEffect(() => {
@@ -43,8 +44,7 @@ const today = new Date().toLocaleDateString("en-CA", { timeZone: "Asia/Dhaka" })
     });
   }, [router]);
 
-
-if (isLoading) return <RevisionLoading />;
+  if (isLoading) return <RevisionLoading />;
 
   const handleAdd = async () => {
     if (!topic.trim()) return alert("Please enter a topic name");
@@ -57,7 +57,7 @@ if (isLoading) return <RevisionLoading />;
           setTopic("");
           const data: Revision[] = await getTodayRevisions(USER_ID);
           setRevisions(data);
-          toast.success(`added successfully ${topic}`)
+          toast.success(`added successfully ${topic}`);
         } else {
           alert("Failed to add topic");
           console.error(res.error);
@@ -73,7 +73,7 @@ if (isLoading) return <RevisionLoading />;
     try {
       await deleteRevision(rev.$id);
       setRevisions(revisions.filter((r) => r.$id !== rev.$id));
-      toast.success("complete the resivion! thank you.")
+      toast.success("complete the resivion! thank you.");
     } catch (err) {
       console.error("Failed to complete revision:", err);
       alert("Could not complete revision.");
@@ -97,7 +97,7 @@ if (isLoading) return <RevisionLoading />;
             height={1000}
             width={1000}
             alt="task"
-            unoptimized={false}
+            unoptimized={true}
             className="h-14 rounded w-14 inline"
           />
           <h1 className="bg-linear-to-r from-blue-500 to-emerald-500 text-transparent bg-clip-text">
@@ -111,7 +111,7 @@ if (isLoading) return <RevisionLoading />;
             placeholder="Enter topic name"
             value={topic}
             onChange={(e) => setTopic(e.target.value)}
-            className="flex-1 placeholder:text-gray-200 text-white/80"
+            className="flex-1 placeholder:text-gray-200 border-gray-400 text-white/80"
           />
           <Button
             onClick={handleAdd}
@@ -123,7 +123,7 @@ if (isLoading) return <RevisionLoading />;
         </div>
 
         {/* Divider */}
-       <Separator className="mb-2 bg-gray-300"/>
+        <Separator className="mb-2 bg-gray-400" />
 
         <h2 className="text-lg font-semibold text-gray-300 mb-4">
           Today’s Revisions
@@ -168,16 +168,16 @@ if (isLoading) return <RevisionLoading />;
                         <div className="flex flex-wrap gap-2 mt-1">
                           <Badge
                             variant="secondary"
-                            className="bg-green-200 text-green-500"
+                            className="bg-green-500 text-white p-1 px-2"
                           >
                             Current: {today}
                           </Badge>
                           {nextDate && (
                             <Badge
                               variant="secondary"
-                              className="bg-blue-200 text-blue-500"
+                              className=" backdrop-blur-xl bg-black/30 text-slate-300 animate-pulse "
                             >
-                              Next: {nextDate}
+                              Next : {nextDate}
                             </Badge>
                           )}
                         </div>
@@ -200,7 +200,7 @@ if (isLoading) return <RevisionLoading />;
       </motion.div>
 
       <div className="flex flex-col gap-4 relative z-50 mt-5 ">
-        <RevisionProgressCard />
+        <RevisionProgressCard allRevisions={revisions} />
       </div>
     </div>
   );

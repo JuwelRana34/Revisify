@@ -30,7 +30,7 @@ function generateNextRevisions() {
     const localDate = new Date(
       now.getTime() + d * 24 * 60 * 60 * 1000
     );
-    // Convert to local YYYY-MM-DD (not UTC)
+
     return localDate.toLocaleDateString("en-CA", { timeZone: "Asia/Dhaka" });
   });
 }
@@ -65,7 +65,7 @@ export async function getTodayRevisions(userId: string): Promise<Revision[]> {
    const today = new Date().toLocaleDateString("en-CA", { timeZone: "Asia/Dhaka" });
 
 
-    const res = await serverDatabases.listDocuments<Revision>( // Here we tell Appwrite what shape to expect
+    const res = await serverDatabases.listDocuments<Revision>(
       process.env.DATABASE_ID!, // "!" tells TypeScript it's not undefined
       process.env.COLLECTION_ID!,
       [Query.equal("userId", userId)]
@@ -83,7 +83,7 @@ export async function getTodayRevisions(userId: string): Promise<Revision[]> {
   }
 }
 
-export async function getAllRevisions(userId: string): Promise<Revision[]> {
+export async function getAllDoneRevisions(userId: string): Promise<Revision[]> {
   try {
     console.log("userId:", userId);
 
@@ -93,7 +93,6 @@ export async function getAllRevisions(userId: string): Promise<Revision[]> {
       [
         Query.equal("userId", userId), // filter by userId
         Query.orderAsc("$createdAt"), // oldest first
-        Query.limit(2)
       ]
     );
     return res.documents; // typed as Revision[]
@@ -106,7 +105,7 @@ export async function getAllRevisions(userId: string): Promise<Revision[]> {
 export async function deleteRevision(revisionId: string) {
   try {
     await serverDatabases.deleteDocument(
-      process.env.DATABASE_ID!, // "!" tells TypeScript it's not undefined
+      process.env.DATABASE_ID!,
       process.env.COLLECTION_ID!,
       revisionId
     );

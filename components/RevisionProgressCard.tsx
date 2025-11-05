@@ -1,25 +1,12 @@
 "use client";
 
-import { getAllRevisions, Revision } from "@/actions/revisions";
+import { Revision } from "@/actions/revisions";
 import { Badge } from "@/components/ui/badge";
-import { account } from "@/lib/appwriteClient";
 import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
-import { useEffect, useState } from "react";
+import Image from "next/image";
 
-export function RevisionProgressCard() {
-  const [allRevisions, setAllRevisions] = useState<Revision[]>([]);
-
-  useEffect(() => {
-    const fetchRevisions = async () => {
-      const user = await account.get();
-      if (!user.$id) throw new Error("Unauthenticated");
-      const data = await getAllRevisions(user.$id);
-      setAllRevisions(data);
-    };
-    fetchRevisions();
-  }, []);
-
+export function RevisionProgressCard({ allRevisions }: {allRevisions:Revision[]}) {
   const today = new Date().toLocaleDateString("en-CA", {
     timeZone: "Asia/Dhaka",
   });
@@ -61,7 +48,9 @@ export function RevisionProgressCard() {
             {/* Timeline */}
             <div className="flex flex-col sm:flex-row items-center justify-center gap-10 sm:gap-6 w-full relative z-10 max-w-3xl">
               {dates.map((date, i) => {
-                const dateStr = date.toISOString().split("T")[0];
+                const dateStr = date.toLocaleDateString("en-CA", {
+                  timeZone: "Asia/Dhaka",
+                });
                 const todayObj = new Date(today);
                 let status: "done" | "current" | "upcoming";
 
@@ -96,7 +85,7 @@ export function RevisionProgressCard() {
                               ? "bg-linear-to-b from-green-400 to-emerald-500"
                               : status === "current"
                               ? "bg-linear-to-b from-orange-500 to-red-500 animate-pulse"
-                              : "bg-slate-700"
+                              : "bg-slate-800"
                           )}
                         />
                       </>
@@ -124,7 +113,7 @@ export function RevisionProgressCard() {
                       className={cn(
                         "relative md:top-10 w-12 h-12 sm:w-14 sm:h-14 rounded-full flex items-center justify-center font-bold text-base sm:text-lg transition-all duration-500 z-10",
                         status === "done"
-                          ? "bg-green-500 text-white"
+                          ? "bg-green-500/30 text-white"
                           : status === "current"
                           ? "bg-linear-to-br from-orange-500 to-red-600 text-white"
                           : "bg-slate-700 text-gray-400"
@@ -141,7 +130,19 @@ export function RevisionProgressCard() {
                         />
                       )}
                       <span className="relative z-10 drop-shadow-md">
-                        {dayNumbers[i]}
+                        {status === "done" ? (
+                          <Image
+                            src={
+                              "https://cdn-icons-png.flaticon.com/128/14090/14090371.png"
+                            }
+                            width={500}
+                            height={500}
+                            alt="success"
+                            className="h-12 md:h-14 w-14"
+                          />
+                        ) : (
+                          dayNumbers[i]
+                        )}
                       </span>
                     </motion.div>
 
